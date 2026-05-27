@@ -1,0 +1,32 @@
+/* ── Link Styles by Folder ────────────────────────────────────────────────── */
+
+/* Modal button rows */
+.lsbf-modal-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+	margin-top: var(--size-4-3);
+}
+
+.lsbf-modal-buttons--secondary {
+	margin-top: var(--size-4-1);
+	opacity: 0.8;
+}
+
+.lsbf-modal-btn {
+	min-width: 44px;
+	min-height: 44px;
+}
+
+/* Settings tab: empty-state message */
+.lsbf-empty-state {
+	color: var(--text-muted);
+	font-style: italic;
+	margin: var(--size-4-2) 0;
+}
+
+/* Focus visible for all interactive elements */
+.lsbf-modal-btn:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 2px;
+}
