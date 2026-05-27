@@ -11,8 +11,6 @@ An Obsidian plugin that applies different link styles depending on the folder in
 
 Git submodules are useful for composing knowledge bases from disparate sources — e.g., GitLab wikis. GitLab wikis have their own link rules that differ from Obsidian's defaults. When those wikis live as submodules inside an Obsidian vault, the user should not have to think about which link style to use depending on context. The plugin handles it automatically.
 
----
-
 ## Configuration Format
 
 The plugin reads `.obsidian/app.json` files at any depth in the vault, looking for two keys:
@@ -26,8 +24,6 @@ The plugin reads `.obsidian/app.json` files at any depth in the vault, looking f
 
 These are the same keys Obsidian already uses in its root-level `app.json`. Subdirectory `.obsidian/app.json` files are standard Obsidian per-folder config files; placing them in submodules requires no knowledge of this plugin.
 
----
-
 ## Cascade Rules
 
 Settings resolve via a **merge-up cascade**:
@@ -37,11 +33,9 @@ Settings resolve via a **merge-up cascade**:
 3. For each of the two settings independently, use the value from the **deepest** (closest-to-file) config file that defines it.
 4. If a setting is not found in *any* config file — including root — fall back to **Obsidian's live in-memory setting** for that key (i.e., whatever the user has set in Obsidian's own Settings → Files and links panel).
 
-This means a submodule can override only `useMarkdownLinks` while inheriting the vault-root value of `newLinkFormat`, and vice versa.
+This means that a submodule can override only `useMarkdownLinks` while inheriting the vault-root value of `newLinkFormat`, and vice versa.
 
 **The rules always apply based on the source file's location** — i.e., the folder containing the note where the outgoing link is being written.
-
----
 
 ## Behaviors
 
@@ -72,7 +66,7 @@ This behavior is configurable in plugin settings:
 > This note is moving to a folder with a different link style.
 > New style: **[[Wikilinks]]**, path format: **Shortest path**
 >
-> [ **Update links** ]  [ **Leave as-is** ]  [ **Always update** ]  [ **Never update** ]
+> [ **Update links** ]  [ **Leave as is** ]  [ **Always update** ]  [ **Never update** ]
 
 "Always update" and "Never update" save the preference to plugin settings and suppress future dialogs.
 
@@ -96,7 +90,7 @@ A list of every folder that has a `.obsidian/app.json` containing one or both of
 
 *Inherited* is shown (and selected) when the key is absent from that folder's config file. Choosing a value writes it to that folder's `.obsidian/app.json`. Clearing back to *Inherited* removes the key from the file.
 
-The dropdowns use the same labels and order as Obsidian's own Settings → Files and links panel for consistency.
+Each folder path and the two dropdowns should be shown inline. The dropdowns use the same labels and order as Obsidian's own Settings → Files and links panel for consistency.
 
 ### Adding a new folder rule
 
@@ -110,8 +104,6 @@ The plugin can read and write `.obsidian/app.json` in any **non-root** folder. I
 ### On move behavior
 
 A dropdown selecting the default behavior when a note is moved between folders with different effective styles: **Ask every time** (default) | **Always update** | **Never update**.
-
----
 
 ## Edge Cases
 
@@ -130,8 +122,6 @@ A dropdown selecting the default behavior when a note is moved between folders w
 
 Every link insertion triggers a walk up the directory tree to collect and merge config files. For deeply nested vaults or vaults with many submodules, this traversal cost may be noticeable. The implementation should consider **caching the resolved effective settings per folder**, invalidating entries when a `.obsidian/app.json` file is created, modified, or deleted (via Obsidian's file-watch events). Caching strategy and cache invalidation are left to the implementer.
 
----
-
 ## Design Rationale
 
 Using `.obsidian/app.json` files as the config mechanism — rather than a standalone plugin config — has two advantages:
@@ -140,3 +130,11 @@ Using `.obsidian/app.json` files as the config mechanism — rather than a stand
 2. **Submodule compatibility.** A submodule that already sets these keys in its own `.obsidian/app.json` will automatically be respected by the plugin without any additional setup. The submodule doesn't need to know this plugin exists.
 
 An alternative design (plugin-specific config file) was rejected because it would provide no path to zero-configuration submodule support.
+
+## Tests
+
+All behaviors defined here should be covered by unit tests.
+
+## Implementation
+
+Use the Obsidian plugin skill to help write this.
