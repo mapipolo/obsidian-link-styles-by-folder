@@ -19,8 +19,11 @@ export function generateLink(
 
 	if (!config.useMarkdownLinks) {
 		// [[wikilink]] format
-		// For .md files Obsidian omits the extension in wikilinks.
-		const inner = linkPath + subpathStr + (alias ? `|${alias}` : '');
+		// Suppress the alias when it would be redundant (equals the default
+		// display text, which is the file's basename for .md files).
+		const defaultDisplay = file.extension === 'md' ? file.basename : file.name;
+		const effectiveAlias = alias && alias !== defaultDisplay ? alias : undefined;
+		const inner = linkPath + subpathStr + (effectiveAlias ? `|${effectiveAlias}` : '');
 		return `[[${inner}]]`;
 	} else {
 		// [alias](path) format
