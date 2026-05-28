@@ -58,8 +58,9 @@ export default class LinkStylesByFolder extends Plugin {
 		this.registerEvent(
 			(this.app.vault as unknown as Events).on('raw', (path: unknown) => {
 				if (typeof path !== 'string') return;
-				if (!path.endsWith('/.obsidian/app.json') && path !== '.obsidian/app.json') return;
-				const folderPath = path.replace(/\/?\.obsidian\/app\.json$/, '');
+				const configFile = `${this.app.vault.configDir}/app.json`;
+				if (!path.endsWith(`/${configFile}`) && path !== configFile) return;
+				const folderPath = path === configFile ? '' : path.slice(0, -(configFile.length + 1));
 				this.resolver.invalidate(folderPath);
 				void this.resolver.loadFolderConfig(folderPath);
 			}),

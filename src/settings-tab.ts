@@ -94,18 +94,18 @@ export class LinkStylesSettingTab extends PluginSettingTab {
 
 		new Setting(this.containerEl)
 			.setName('Use [[wikilinks]]')
-			.setDesc('The vault-wide setting from .obsidian/app.json. Managed by Obsidian.')
+			.setDesc('The vault-wide setting from the Obsidian app config. Managed by Obsidian.')
 			.addDropdown((dd) => {
-				Object.entries(LINK_STYLE_OPTIONS).forEach(([k, v]) => dd.addOption(k, v));
+				Object.entries(LINK_STYLE_OPTIONS).forEach(([k, v]) => { dd.addOption(k, v); });
 				dd.setValue(useMarkdownLinksKey(rootCfg));
 				dd.setDisabled(true);
 			});
 
 		new Setting(this.containerEl)
 			.setName('New link format')
-			.setDesc('The vault-wide setting from .obsidian/app.json. Managed by Obsidian.')
+			.setDesc('The vault-wide setting from the Obsidian app config. Managed by Obsidian.')
 			.addDropdown((dd) => {
-				Object.entries(FORMAT_OPTIONS).forEach(([k, v]) => dd.addOption(k, v));
+				Object.entries(FORMAT_OPTIONS).forEach(([k, v]) => { dd.addOption(k, v); });
 				dd.setValue(linkFormatKey(rootCfg));
 				dd.setDisabled(true);
 			});
@@ -117,7 +117,7 @@ export class LinkStylesSettingTab extends PluginSettingTab {
 		const heading = new Setting(this.containerEl)
 			.setHeading()
 			.setName('Folder rules');
-		heading.setDesc('Each folder with a .obsidian/app.json. "Inherited" means that key is absent from the file.');
+		heading.setDesc('Each folder with a custom app config. "inherited" means that key is absent from the file.');
 
 		const folderConfigs = await this.resolver.scanFolderConfigs();
 
@@ -140,31 +140,31 @@ export class LinkStylesSettingTab extends PluginSettingTab {
 			.setDesc('');
 
 		setting.addDropdown((dd) => {
-			Object.entries(LINK_STYLE_OPTIONS).forEach(([k, v]) => dd.addOption(k, v));
+			Object.entries(LINK_STYLE_OPTIONS).forEach(([k, v]) => { dd.addOption(k, v); });
 			dd.setValue(useMarkdownLinksKey(cfg));
-			dd.onChange(async (value) => {
+			dd.onChange((value) => {
 				const updated: FolderConfig = { ...cfg };
 				if (value === 'inherited') {
 					delete updated.useMarkdownLinks;
 				} else {
 					updated.useMarkdownLinks = value === 'markdown';
 				}
-				await this._saveFolderConfig(folderPath, updated);
+				void this._saveFolderConfig(folderPath, updated);
 				cfg.useMarkdownLinks = updated.useMarkdownLinks;
 			});
 		});
 
 		setting.addDropdown((dd) => {
-			Object.entries(FORMAT_OPTIONS).forEach(([k, v]) => dd.addOption(k, v));
+			Object.entries(FORMAT_OPTIONS).forEach(([k, v]) => { dd.addOption(k, v); });
 			dd.setValue(linkFormatKey(cfg));
-			dd.onChange(async (value) => {
+			dd.onChange((value) => {
 				const updated: FolderConfig = { ...cfg };
 				if (value === 'inherited') {
 					delete updated.newLinkFormat;
 				} else {
 					updated.newLinkFormat = value as LinkFormat;
 				}
-				await this._saveFolderConfig(folderPath, updated);
+				void this._saveFolderConfig(folderPath, updated);
 				cfg.newLinkFormat = updated.newLinkFormat;
 			});
 		});
@@ -187,26 +187,27 @@ export class LinkStylesSettingTab extends PluginSettingTab {
 
 		const setting = new Setting(this.containerEl)
 			.setName('Folder path')
-			.setDesc('Vault-relative path (e.g. posts/gitlab-wiki). Creates .obsidian/app.json if it does not exist.')
+			.setDesc('Vault-relative path (e.g. Posts/GitLab-wiki). Creates a config folder if it does not exist.')
 			.addText((text) => {
 				inputEl = text.inputEl;
-				text.setPlaceholder('folder/path');
+				text.setPlaceholder('Folder/path');
 				new FolderSuggest(this.app, inputEl);
 			})
 			.addButton((btn) => {
-				btn.setButtonText('Add').setCta().onClick(async () => {
+				btn.setButtonText('Add').setCta().onClick(() => {
 					const folderPath = inputEl.value.trim().replace(/^\/|\/$/g, '');
 					if (!folderPath) {
 						new Notice('Please enter a folder path.');
 						return;
 					}
-					if (!folderPath || folderPath === '') {
+					if (folderPath === '') {
 						new Notice('Cannot add a rule for the vault root — edit Obsidian settings directly.');
 						return;
 					}
-					await this.resolver.writeFolderConfig(folderPath, {});
-					inputEl.value = '';
-					this.display(); // re-render to show the new row
+					void this.resolver.writeFolderConfig(folderPath, {}).then(() => {
+						inputEl.value = '';
+						this.display();
+					});
 				});
 			});
 
@@ -232,9 +233,9 @@ export class LinkStylesSettingTab extends PluginSettingTab {
 				dd.addOption('always', 'Always update links');
 				dd.addOption('never', 'Never update links');
 				dd.setValue(this.settings.onMove);
-				dd.onChange(async (value) => {
+				dd.onChange((value) => {
 					this.settings.onMove = value as PluginSettings['onMove'];
-					await this.plugin.saveSettings();
+					void this.plugin.saveSettings();
 				});
 			});
 	}

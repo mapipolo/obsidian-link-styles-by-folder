@@ -130,7 +130,7 @@ export class ConfigResolver {
 
 		return {
 			useMarkdownLinks: useMarkdownLinks ?? this._liveSetting('useMarkdownLinks', false),
-			newLinkFormat: newLinkFormat ?? this._liveSetting('newLinkFormat', 'shortest' as LinkFormat),
+			newLinkFormat: newLinkFormat ?? this._liveSetting('newLinkFormat', 'shortest'),
 		};
 	}
 
@@ -147,7 +147,7 @@ export class ConfigResolver {
 		);
 
 		// resolveSync is now guaranteed to succeed.
-		return this.resolveSync(filePath)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+		return this.resolveSync(filePath)!;
 	}
 
 	// ─── Writing ───────────────────────────────────────────────────────────────
@@ -161,7 +161,7 @@ export class ConfigResolver {
 		if (!folderPath) throw new Error('Cannot write to vault-root app.json');
 
 		const configPath = this._configPath(folderPath);
-		const dirPath = normalizePath(folderPath + '/.obsidian');
+		const dirPath = normalizePath(folderPath + '/' + this.app.vault.configDir);
 
 		// Merge with existing file content.
 		let existing: Record<string, unknown> = {};
@@ -257,7 +257,7 @@ export class ConfigResolver {
 	// ─── Helpers ───────────────────────────────────────────────────────────────
 
 	private _configPath(folderPath: string): string {
-		return normalizePath((folderPath ? folderPath + '/' : '') + '.obsidian/app.json');
+		return normalizePath((folderPath ? folderPath + '/' : '') + this.app.vault.configDir + '/app.json');
 	}
 
 	private _liveSetting<T>(key: string, defaultValue: T): T {
