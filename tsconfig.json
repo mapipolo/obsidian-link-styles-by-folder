@@ -5,12 +5,13 @@
     "inlineSources": true,
     "module": "ESNext",
     "target": "ES2018",
-    "allowSyntheticDefaultImports": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
     "isolatedModules": true,
+    "esModuleInterop": true,
     "strict": true,
-    "lib": ["ES2018", "DOM"]
+    "noEmit": true,
+    "lib": ["DOM", "ES2018"]
   },
   "include": ["src/**/*.ts"]
 }

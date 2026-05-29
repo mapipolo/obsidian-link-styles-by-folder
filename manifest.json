@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "minAppVersion": "1.4.10",
   "description": "Applies per-folder link style rules so notes in different folders — such as Git submodules — automatically use their configured link format.",
-  "author": "Michael A. Pipolo",
-  "authorUrl": "",
+  "author": "Michael Pipolo",
+  "authorUrl": "https://github.com/mapipolo",
   "isDesktopOnly": false
 }

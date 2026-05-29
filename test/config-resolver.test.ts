@@ -42,6 +42,7 @@ function makeApp(
 	const app = {
 		vault: {
 			adapter,
+			configDir: '.obsidian',
 			getFiles: () => vaultFiles,
 			getAllLoadedFiles: () => vaultFiles,
 			config: liveSettings,

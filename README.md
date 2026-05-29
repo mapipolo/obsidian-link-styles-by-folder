@@ -37,6 +37,8 @@ Place a `.obsidian/app.json` file in any subfolder with one or both of these key
 
 These are the same keys Obsidian uses in the vault-root `app.json`, so any submodule that already configures them is automatically respected. The plugin reads the chain of `app.json` files from the note's folder up to the vault root, using the deepest value found for each key, and falls back to Obsidian's own setting if a key appears nowhere.
 
+> **Implementation note:** Obsidian exposes no public hook for customizing link generation per file, so the plugin wraps `app.fileManager.generateMarkdownLink` while it is loaded and restores the original on unload. As a result, this plugin may not interoperate cleanly with other plugins that wrap the same method.
+
 ## Manual installation
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](../../releases/latest).
